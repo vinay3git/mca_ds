@@ -1,71 +1,63 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#define MAX 10
+int i, j, k, a, b, u, v, n, ne = 1;
+int min, mincost = 0, cost[9][9], parent[9];
 
-int parent[MAX];
+int find(int);
+int uni(int, int);
 
-int find(int i){ 
-	while(parent[i])
-	 	i=parent[i]; 
-	return i; 
-} 
-						  
-int uni(int i,int j){
-	if(i!=j){  
-		parent[j]=i; 
-		return 1; 
-	} 
-	return 0; 
-} 
-	 
-	 
-int main(){  
-	int vertex_count=0;
-	int row,column;
-	int cost_matrix[MAX][MAX];
-	int edge_count=0,count=1;
-	int sum_cost=0,min_cost;
-	int row_no,column_no,edge1,edge2;
-	
-	printf("Implementation of Kruskal's algorithm\n\n");
-	printf("Total no of vertex :: ");
-	scanf("%d",&vertex_count);
-	
-	//Get edge weight matrix from user	
-	for(row=1;row<=vertex_count;row++){
-		for(column=1;column<=vertex_count;column++){
-			scanf("%d",&cost_matrix[row][column]);
-			if(cost_matrix[row][column] == 0){
-				cost_matrix[row][column] = 999;
-			}
-		}
-	}
-	
-	edge_count = vertex_count-1;
-	
-	while(count <= edge_count){
-		for(row=1,min_cost=999;row<=vertex_count;row++){
-			for(column=1;column<=vertex_count;column++){
-				if(cost_matrix[row][column] < min_cost){
-						min_cost = cost_matrix[row][column];
-						edge1 = row_no    =  row;
-						edge2 = column_no =  column;
-				}
-			}
-		}   
- 
-		row_no    = find(row_no);  
-		column_no = find(column_no);  
-		
-		if(uni(row_no,column_no)){  
-			printf("\nEdge %d is (%d -> %d) with cost : %d ",count++,edge1,edge2,min_cost);
-			sum_cost = sum_cost + min_cost;
-		}
-		cost_matrix[edge1][edge2] = cost_matrix[edge2][edge1] = 999;
-	}    
-	printf("\n Minimum cost=%d",sum_cost);  
-	return 0;
-} 
-					  				  
+void main() {
+    printf("\nEnter the number of vertices: ");
+    scanf("%d", &n);
 
+    printf("\nEnter the cost adjacency matrix:\n");
+    for (i = 1; i <= n; i++) {
+        for (j = 1; j <= n; j++) {
+            scanf("%d", &cost[i][j]);
+            if (cost[i][j] == 0) {
+                cost[i][j] = 999;
+            }
+        }
+    }
+
+    printf("The edges of the Minimum Cost Spanning Tree are:\n");
+    while (ne < n) {
+        for (i = 1, min = 999; i <= n; i++) {
+            for (j = 1; j <= n; j++) {
+                if (cost[i][j] < min) {
+                    min = cost[i][j];
+                    a = u = i;
+                    b = v = j;
+                }
+            }
+        }
+
+        u = find(u);
+        v = find(v);
+
+        if (uni(u, v)) {
+            printf("%d edge (%d,%d) = %d\n", ne++, a, b, min);
+            mincost += min;
+        }
+
+        cost[a][b] = cost[b][a] = 999;
+    }
+
+    printf("\nMinimum cost = %d\n", mincost);
+}
+
+int find(int i) {
+    while (parent[i]) {
+        i = parent[i];
+    }
+    return i;
+}
+
+int uni(int i, int j) {
+    if (i != j) {
+        parent[j] = i;
+        return 1;
+    }
+    return 0;
+}
