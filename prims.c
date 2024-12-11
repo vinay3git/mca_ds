@@ -1,69 +1,44 @@
-#include<stdio.h>
+#include <stdio.h>
 
-#define MAX 10
+int n, i, j, u, v, a, b;
+int cost[10][10], visited[10]= {0}, min, mincost= 0, ne= 1;
 
-int main(){
-	int vertex_array[MAX],counter;
-	int vertex_count=0;
-	int row,column;
-	int cost_matrix[MAX][MAX];
-	int visited[MAX]={0};
-	int edge_count=0,count=1;
-	int sum_cost=0,min_cost=0;
-	int row_no,column_no,vertex1,vertex2;
-	
-	printf("Total no of vertex :: ");
-	scanf("%d",&vertex_count);
-	
-	printf("\n-- Enter vertex -- \n\n");
-	for(counter=1;counter<=vertex_count;counter++){
-		printf("vertex[%d] :: ",counter);
-		scanf("%d",&vertex_array[counter]);
-	}
-	
-	printf("\n--- Enter Cost matrix of size %d x %d  ---\n\n",vertex_count,vertex_count);
-	printf("\n\t-- format is --\n");
-	for(row=1;row<=vertex_count;row++){
-		for(column=1;column<=vertex_count;column++){
-			printf("x ");
-		}
-		printf("\n");
-	}
-	printf("\n-- MATRIX --\n\n");
-	//Get edge weight matrix from user	
-	for(row=1;row<=vertex_count;row++){
-		for(column=1;column<=vertex_count;column++){
-			scanf("%d",&cost_matrix[row][column]);
-			if(cost_matrix[row][column] == 0){
-				cost_matrix[row][column] = 999;
-			}
-		}
-	}
-	
-	printf("\n");
-	visited[1]=1;
-	edge_count = vertex_count-1;
-	
-	while(count <= edge_count){
-		for(row=1,min_cost=999;row<=vertex_count;row++){
-			for(column=1;column<=vertex_count;column++){
-				if(cost_matrix[row][column] < min_cost){
-					if(visited[row] != 0){
-						min_cost = cost_matrix[row][column];
-						vertex1 = row_no = row;
-						vertex2 = column_no = column;
-					}
-				}
-			}
-		}
-		
-		if(visited[row_no] == 0 || visited[column_no] ==0){
-			printf("\nEdge %d is (%d -> %d) with cost : %d ",count++,vertex_array[vertex1],vertex_array[vertex2],min_cost);
-			sum_cost = sum_cost + min_cost;
-			visited[column_no]=1;
-		}
-		cost_matrix[vertex1][vertex2] = cost_matrix[vertex2][vertex1] = 999;
-	}
-	printf("\n\nMinimum cost=%d",sum_cost); 
-	return 0;
+void main() {
+        printf("\nEnter the number of nodes: ");
+        scanf("%d", &n);
+
+        printf("\nEnter the adjacency matrix:\n");
+        for (i = 1; i <= n; i++) {
+                for (j = 1; j <= n; j++) {
+                        scanf("%d", &cost[i][j]);
+                        if (cost[i][j] == 0) {
+                                cost[i][j] = 999;
+                        }
+                }
+        }
+
+        visited[1] = 1;
+        printf("\n");
+
+        while (ne < n) {
+                for (i = 1, min = 999; i <= n; i++) {
+                        for (j = 1; j <= n; j++) {
+                                if (cost[i][j] < min && visited[i] != 0) {
+                                        min = cost[i][j];
+                                        a = u = i;
+                                        b = v = j;
+                                }
+                        }
+                }
+
+                if (visited[u] == 0 || visited[v] == 0) {
+                        printf("\nEdge %d: (%d %d) cost: %d", ne++, a, b, min);
+                        mincost += min;
+                        visited[b] = 1;
+                }
+
+                cost[a][b] = cost[b][a] = 999; // Mark the edge as used
+        }
+
+        printf("\n\nMinimum cost: %d\n", mincost);
 }
