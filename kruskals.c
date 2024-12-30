@@ -1,30 +1,43 @@
 #include <stdio.h>
-#include <stdlib.h>
 
-int i, j, k, a, b, u, v, n, ne = 1;
-int min, mincost = 0, cost[9][9], parent[9];
+int parent[10], n, cost[10][10];
 
-int find(int);
-int uni(int, int);
+int find(int i) {
+    while (parent[i] != i)
+        i = parent[i];
+    return i;
+}
+
+int union_set(int i, int j) {
+    int a = find(i);
+    int b = find(j);
+    parent[a] = b;
+    return 0;
+}
 
 void main() {
-    printf("\nEnter the number of vertices: ");
+    int i, j, a, b, u, v, ne = 1, min, mincost = 0;
+
+    printf("Enter the number of nodes: ");
     scanf("%d", &n);
 
-    printf("\nEnter the cost adjacency matrix:\n");
-    for (i = 1; i <= n; i++) {
-        for (j = 1; j <= n; j++) {
+    printf("Enter the adjacency matrix:\n");
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
             scanf("%d", &cost[i][j]);
-            if (cost[i][j] == 0) {
+            if (cost[i][j] == 0)
                 cost[i][j] = 999;
-            }
         }
     }
 
-    printf("The edges of the Minimum Cost Spanning Tree are:\n");
+
+    for (i = 0; i < n; i++)
+        parent[i] = i;
+
+    printf("\nEdges in the Minimum Spanning Tree:\n");
     while (ne < n) {
-        for (i = 1, min = 999; i <= n; i++) {
-            for (j = 1; j <= n; j++) {
+        for (i = 0, min = 999; i < n; i++) {
+            for (j = 0; j < n; j++) {
                 if (cost[i][j] < min) {
                     min = cost[i][j];
                     a = u = i;
@@ -36,28 +49,16 @@ void main() {
         u = find(u);
         v = find(v);
 
-        if (uni(u, v)) {
-            printf("%d edge (%d,%d) = %d\n", ne++, a, b, min);
+
+        if (u != v) {
+            printf("Edge %d: (%d, %d) cost: %d\n", ne++, a, b, min);
             mincost += min;
+            union_set(u, v);
         }
 
-        cost[a][b] = cost[b][a] = 999;
+
+    cost[a][b] = cost[b][a] = 999;
     }
 
-    printf("\nMinimum cost = %d\n", mincost);
-}
-
-int find(int i) {
-    while (parent[i]) {
-        i = parent[i];
-    }
-    return i;
-}
-
-int uni(int i, int j) {
-    if (i != j) {
-        parent[j] = i;
-        return 1;
-    }
-    return 0;
+    printf("\nMinimum cost: %d\n", mincost);
 }
